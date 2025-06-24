@@ -1,0 +1,23 @@
+entero inicio() {   
+    entero[] arreglo = [5, 2, 8, 1];  
+    para entero i = 0 hasta arreglo.longitud() - 1 {
+        mostrar("Cadena desordenada: " + arreglo[i] ); 
+    }
+    ordenarBurbuja(arreglo);
+    para entero i = 0 hasta arreglo.longitud() - 1 {
+        mostrar("Cadena ordenada: " + arreglo[i] ); 
+    }   
+    retorno 0;  
+}   
+
+vacio ordenarBurbuja(entero[] arr) {   
+    para entero i = 0 hasta longitud(arr) - 1 {   
+        para entero j = 0 hasta longitud(arr) - i - 1 {   
+            si (arr[j] > arr[j + 1]) { 
+                entero temp = arr[j];   
+                arr[j] = arr[j + 1];   
+                arr[j + 1] = temp;   
+            }   
+        }   
+    }   
+}

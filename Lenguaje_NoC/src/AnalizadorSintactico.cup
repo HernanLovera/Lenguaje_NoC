@@ -1,0 +1,136 @@
+parser code {:
+    public void report_error(String message, Object info) {
+        System.err.println("Error de sintaxis: " + message);
+    }
+:}
+
+terminal 
+  ENTERO, DECIMAL, TEXTO, BOOLEANO, VACIO,
+  INICIO, RETORNO, MOSTRAR,
+  PARA, HASTA, MIENTRAS, HACER, SI, SINO, SALTEAR, CONTINUAR,
+  IRA, CASO, ENCASODE, DEFECTO,
+  CONST, ESTRUCT, TIPODEF,
+  ID, NUM, CADENA,
+
+  IGUAL, MAS, MENOS, POR, DIV,
+  IGUALIGUAL, DISTINTO, MENOR, MAYOR,
+  Y, O,
+  MASIGUAL, PORIGUAL, DIVIGUAL,
+
+  LPAR, RPAR, LLLAVE, RLLAVE, LBRACK, RBRACK,
+  PUNTOYCOMA, COMA, PUNTO,
+  DOSPUNTOS, ASIGNACION;
+
+non terminal 
+  programa, listaFunciones, funcion, funcionPrincipal, funcionesAux,
+  tipo, parametros, parametro, bloque,
+  declaraciones, declaracion, asignacion,
+  sentencia, sentencias,
+  expresion, expresionBinaria, termino, factor,
+  llamadoFuncion, listaArgumentos;
+
+precedence left MAS, MENOS;
+precedence left POR, DIV;
+precedence left IGUALIGUAL, DISTINTO, MENOR, MAYOR;
+precedence left Y, O;
+
+start with programa;
+
+programa ::= funcionPrincipal funcionesAux ;
+
+funcionPrincipal ::= ENTERO INICIO LPAR RPAR bloque ;
+
+funcionesAux ::= listaFunciones funcion
+              | funcion
+              ;
+
+listaFunciones ::= funcion
+                | listaFunciones funcion
+                ;
+
+funcion ::= tipo ID LPAR parametros RPAR bloque
+         | tipo ID LPAR RPAR bloque
+         ;
+
+tipo ::= ENTERO
+      | DECIMAL
+      | TEXTO
+      | BOOLEANO
+      | VACIO
+      ;
+
+parametros ::= parametro
+            | parametros COMA parametro
+            ;
+
+parametro ::= tipo ID
+           | tipo LBRACK RBRACK ID
+           ;
+
+bloque ::= LLLAVE sentencias RLLAVE ;
+
+sentencias ::= sentencia
+            | sentencias sentencia
+            ;
+
+sentencia ::= declaracion PUNTOYCOMA
+           | asignacion PUNTOYCOMA
+           | llamadoFuncion PUNTOYCOMA
+           | MOSTRAR LPAR expresion RPAR PUNTOYCOMA
+           | RETORNO expresion PUNTOYCOMA
+           | PARA tipo ID ASIGNACION expresion HASTA expresion bloque
+           | MIENTRAS LPAR expresion RPAR bloque
+           | SI LPAR expresion RPAR bloque
+           | SI LPAR expresion RPAR bloque SINO bloque
+           | HACER bloque MIENTRAS LPAR expresion RPAR PUNTOYCOMA
+           | SALTEAR PUNTOYCOMA
+           | CONTINUAR PUNTOYCOMA
+           | IRA ID PUNTOYCOMA
+           | ID DOSPUNTOS
+           | error PUNTOYCOMA
+           ;
+
+declaracion ::= tipo ID
+             | tipo ID ASIGNACION expresion
+             | tipo LBRACK RBRACK ID ASIGNACION LBRACK listaArgumentos RBRACK
+             ;
+
+asignacion ::= ID ASIGNACION expresion
+            | ID LBRACK expresion RBRACK ASIGNACION expresion
+            ;
+
+llamadoFuncion ::= ID LPAR listaArgumentos RPAR
+                | ID LPAR RPAR
+                ;
+
+listaArgumentos ::= expresion
+                 | listaArgumentos COMA expresion
+                 ;
+
+expresion ::= expresionBinaria
+           | termino
+           ;
+
+expresionBinaria ::= expresion MAS expresion
+                 | expresion MENOS expresion
+                 | expresion POR expresion
+                 | expresion DIV expresion
+                 | expresion IGUALIGUAL expresion
+                 | expresion DISTINTO expresion
+                 | expresion MENOR expresion
+                 | expresion MAYOR expresion
+                 | expresion Y expresion
+                 | expresion O expresion
+                 ;
+
+termino ::= factor
+         | ID
+         | ID LBRACK expresion RBRACK
+         | llamadoFuncion
+         | ID PUNTO ID LPAR RPAR
+         ;
+
+factor ::= NUM
+        | CADENA
+        | LPAR expresion RPAR
+        ;
